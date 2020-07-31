@@ -22,7 +22,10 @@ DESTINATION_BRANCH="${INPUT_DESTINATION_BRANCH:-"master"}"
 git remote set-url origin "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY"
 
 # Pull all branches references down locally so subsequent commands can see them
-git fetch origin '+refs/heads/*:refs/heads/*'
+git fetch origin '+refs/heads/*:refs/heads/*' --update-head-ok
+
+# Print out all branches
+git --no-pager branch -a -vv
 
 if [ "$(git rev-parse --revs-only "$SOURCE_BRANCH")" = "$(git rev-parse --revs-only "$DESTINATION_BRANCH")" ]; then 
   echo "Source and destination branches are the same." 
@@ -31,7 +34,7 @@ fi
 
 # Do not proceed if there are no file differences, this avoids PRs with just a merge commit and no content
 LINES_CHANGED=$(git diff --name-only "$DESTINATION_BRANCH" "$SOURCE_BRANCH" | wc -l | awk '{print $1}')
-if [[ "$LINES_CHANGED" = "0" ]]; then 
+if [[ "$LINES_CHANGED" = "0" ]] && [[ ! "$INPUT_PR_ALLOW_EMPTY" ==  "true" ]]; then
   echo "No file changes detected between source and destination branches." 
   exit 0
 fi
@@ -44,7 +47,10 @@ PR_ARG="$INPUT_PR_TITLE"
 if [[ ! -z "$PR_ARG" ]]; then
   PR_ARG="-m \"$PR_ARG\""
 
-  if [[ ! -z "$INPUT_PR_BODY" ]]; then
+  if [[ ! -z "$INPUT_PR_TEMPLATE" ]]; then
+    sed -i 's/`/\\`/g; s/\$/\\\$/g' "$INPUT_PR_TEMPLATE"
+    PR_ARG="$PR_ARG -m \"$(echo -e "$(cat "$INPUT_PR_TEMPLATE")")\""
+  elif [[ ! -z "$INPUT_PR_BODY" ]]; then
     PR_ARG="$PR_ARG -m \"$INPUT_PR_BODY\""
   fi
 fi
@@ -65,6 +71,10 @@ if [[ ! -z "$INPUT_PR_MILESTONE" ]]; then
   PR_ARG="$PR_ARG -M \"$INPUT_PR_MILESTONE\""
 fi
 
+if [[ "$INPUT_PR_DRAFT" ==  "true" ]]; then
+  PR_ARG="$PR_ARG -d"
+fi
+
 COMMAND="hub pull-request \
   -b $DESTINATION_BRANCH \
   -h $SOURCE_BRANCH \
@@ -73,4 +83,11 @@ COMMAND="hub pull-request \
   || true"
 
 echo "$COMMAND"
-sh -c "$COMMAND"
+
+PR_URL=$(sh -c "$COMMAND")
+if [[ "$?" != "0" ]]; then
+  exit 1
+fi
+
+echo ${PR_URL}
+echo "::set-output name=pr_url::${PR_URL}"

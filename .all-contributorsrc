@@ -26,11 +26,48 @@
         "doc",
         "ideas"
       ]
+    },
+    {
+      "login": "Goobles",
+      "name": "Gobius Dolhain",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8776771?v=4",
+      "profile": "https://github.com/Goobles",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jamesnetherton",
+      "name": "James Netherton",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4721408?v=4",
+      "profile": "https://github.com/jamesnetherton",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ChristophShyper",
+      "name": "Krzysztof Szyper",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/45788587?v=4",
+      "profile": "https://christophshyper.github.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "michalkoza",
+      "name": "Michał Koza",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2995498?v=4",
+      "profile": "https://github.com/michalkoza",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "pull-request",
   "projectOwner": "repo-sync",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }

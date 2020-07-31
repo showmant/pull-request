@@ -18,6 +18,9 @@ inputs:
   pr_body:
     description: Pull request body
     required: false
+  pr_template:
+    description: Pull request template
+    required: false
   pr_reviewer:
     description: Pull request reviewers, comma-separated list (no spaces)
     required: false
@@ -30,9 +33,18 @@ inputs:
   pr_milestone:
     description: Pull request milestone
     required: false
+  pr_draft:
+    description: Draft pull request
+    required: false
+  pr_allow_empty:
+    description: Create PR even if no changes
+    required: false
   github_token:
     description: GitHub token secret
     required: true
+outputs:
+  pr_url:
+    description: 'Pull request URL'
 runs:
   using: 'docker'
   image: 'Dockerfile'
