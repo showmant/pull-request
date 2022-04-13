@@ -19,6 +19,10 @@ fi
 
 DESTINATION_BRANCH="${INPUT_DESTINATION_BRANCH:-"master"}"
 
+# workaround
+# https://github.com/repo-sync/pull-request/issues/84
+git config --global --add safe.directory /github/workspace
+
 # Github actions no longer auto set the username and GITHUB_TOKEN
 git remote set-url origin "https://$GITHUB_ACTOR:$GITHUB_TOKEN@${GITHUB_SERVER_URL#https://}/$GITHUB_REPOSITORY"
 
